@@ -1,7 +1,7 @@
 Title: iOS app categorization sample
 Slug: ios-app-categorization-sample
 Lang: en
-Time: 2019-05-07 18:00
+Date: 2019-05-07 18:00
 Category: categorization
 Category: ios
 

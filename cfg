@@ -1,0 +1,11 @@
+input = en/note
+item = item.template
+preview = preview.template
+index = index.template
+paginationPrev = pagination.prev.template
+paginationNext = pagination.next.template
+paginationPrevNext = pagination.template
+previewSize = 300
+previewEnding = . . .
+previewsPerPage = 7
+previewPageBaseName = index

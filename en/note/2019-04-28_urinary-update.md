@@ -1,7 +1,7 @@
 Title: Royal Canin is yet another Landlord
 Slug: royal-canin-replaced-urinary-for-cats
 Lang: en
-Time: 2019-04-28 20:00
+Date: 2019-04-28 20:00
 Category: feudalism
 
 Today me and my wife went to shop for cat meals. We bought new Royal Canin Urinary SO pouches. We thought Royal Canin only updated the package. However, they also altered pouch contents. Previously Urinary SO contained pieces with jelly. New Urinary SO contains different pieces and sauce. And there's less sauce than there was jelly.

@@ -1,7 +1,7 @@
 Title: Git squash hype
 Slug: git-squash-hype
 Lang: en
-Time: 2019-05-22 13:40
+Date: 2019-05-22 13:40
 Category: mercurial
 
 I've got an email from Atlassian today:

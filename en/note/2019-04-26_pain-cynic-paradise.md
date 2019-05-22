@@ -1,7 +1,7 @@
 Title: Yandex.Music is yet another Landlord 2.0
 Slug: yandex-music-pain-cynic-paradise-lost
 Lang: en
-Time: 2019-04-26 13:00
+Date: 2019-04-26 13:00
 Category: digital-feudalism
 
 Lately I wrote about how we at Opensource Game Studio are going to [defend availability][defense] of our tools from so-called "dead hand

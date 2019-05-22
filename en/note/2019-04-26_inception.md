@@ -1,7 +1,7 @@
 Title: Inception of my personal web site / diary
 Slug: inception
 Lang: en
-Time: 2019-04-26 12:00
+Date: 2019-04-26 12:00
 Category: site
 Category: digital-feudalism
 
@@ -21,4 +21,4 @@ the [next note][pain-cynic-paradise] to find out more.
 
 [ogs]: http://opengamestudio.org
 [tag-digital-feudalism]: tag/digital-feudalism.html
-[pain-cynic-paradise]: 
+[pain-cynic-paradise]: yandex-music-pain-cynic-paradise-lost.html

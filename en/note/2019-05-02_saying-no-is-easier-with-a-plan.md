@@ -1,7 +1,7 @@
 Title: How having a plan makes it easy to say "no"
 Slug: saying-no-is-easier-with-a-plan
 Lang: en
-Time: 2019-05-02 14:00
+Date: 2019-05-02 14:00
 Category: time-management
 
 Today I've watched time managment video. It had quite a fascinating idea:

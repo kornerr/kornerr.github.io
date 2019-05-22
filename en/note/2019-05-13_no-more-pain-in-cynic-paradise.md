@@ -1,7 +1,7 @@
 Title: Yandex.Music removed Pain's complete album
 Slug: yandex-music-pain-cynic-paradise-no-more
 Lang: en
-Time: 2019-05-13 13:20
+Date: 2019-05-13 13:20
 Category: digital-feudalism
 
 Recently I reported that [Yandex.Music has replaced one version][replacement] of Pain's "Cynic Paradise" album with another one. I was angry at the time.
