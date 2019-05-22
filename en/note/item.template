@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <head>
+        <style>
+            #header
+            {
+                background: DarkGoldenRod;
+                padding: 0.7em;
+                text-align: left;
+            }
+            #header a
+            {
+                color: white;
+                text-decoration: none;
+                padding: 0.5em 1em 0.5em 1em;
+            }
+            body
+            {
+                background: #FAFAFA;
+            }
+            .contents
+            {
+                background: #FFFFFF;
+                width: 720px;
+                padding: 1em;
+                margin-top: 2em;
+                margin-bottom: 2em;
+                border: 1px solid #E0E0E0;
+                text-align: left;
+            }
+            table
+            {
+                border-collapse: collapse;
+            }
+            
+            table, th, td
+            {
+                border: 1px solid #aaa;
+                padding: 0.5em;
+                margin-top: 0.5em;
+                margin-bottom: 0.5em;
+            }
+            #lang
+            {
+                float: right;
+            }
+            img
+            {
+                width: 100%;
+            }
+            .itemDate
+            {
+                margin-bottom: 2em;
+                color: #aaa;
+            }
+            .itemTitle a
+            {
+                color: #3A91CB;
+                text-decoration: none;
+            }
+        </style>
+        <title>kornerr</title>
+    </head>
+    <body>
+        <div id="header">
+            <strong>kornerr</strong>
+            <a href="../../en/blog/index.html">Notes</a>
+        </div>
+        <center>
+            <h1>In the notes...</h1>
+            <div class="contents">
+                <h2 class="itemTitle">
+                    <a href="PSKOV_ITEM_URL">PSKOV_ITEM_TITLE</a>
+                </h2>
+                <p class="itemDate">
+                    PSKOV_ITEM_DATE
+                </p>
+PSKOV_ITEM_CONTENTS
+            </div>
+        </center>
+    </body>
+</html>
