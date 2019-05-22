@@ -6,14 +6,11 @@ Category: mercurial
 
 I've got an email from Atlassian today:
 
+![Git squash hype][git-squash-hype]
 
-TODO
+that leads to [this BitBucket blog post][blog-post]. Apparantly Git users use squash to liberate their history from noise.
 
-https://bitbucket.org/blog/git-squash-commits-merging-bitbucket
+I just wanted to note that Mercurial does this kind of "noise removal" by default: one simply merges development branch into `default` one, and `default` one gets a complete diff into, as a single commit.
 
-apparantly Git users use squash to liberate their history from noise
-
-mercurial has it much easier by default: simply merge the necessary branch's commit into `default`, and that's it: `default` only gets a complete difference between `default` and the branch you merge as a single commit in `default`. If you want details simply see the branch, if you don't want the noise, simply see `default`.
-
-TODO
-
+[blog-post]: https://bitbucket.org/blog/git-squash-commits-merging-bitbucket
+[git-squash-hype]: ../../img/2019-05-22_git-squash-hype.png
