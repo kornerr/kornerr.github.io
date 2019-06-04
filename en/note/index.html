@@ -84,6 +84,20 @@
             <h1>Notes</h1>
         <div class="contents">
             <h2 class="itemTitle">
+                <a href="2019-06-04_ssl.html">SSL prevents durability</a>
+            </h2>
+            <p class="itemDate">
+                2019-06-04 12:50
+            </p>
+<p>When I was researching durable applications, I found out that SSL has a big problem: SSL prevents durability by always injecting newer and newer requirements. For example, you can't open GitHub, BitBucket, or SourceForge on Windows 2000 running Firefox 12:</p>
+<p><img src="../../img/2019-06-04_w2k-ssl.png" alt="W2K SSL" /></p>
+<p>Someone may argue that SSL makes Internet safer. That's highly questionable because each year we are attacked by news stories of leaked data. You can't argue that SSL prevents durability and thus accessibility.. . .</p>
+            <div class="itemMore">
+                <a href="2019-06-04_ssl.html">Continue reading</a>
+            </div>
+        </div>
+        <div class="contents">
+            <h2 class="itemTitle">
                 <a href="2019-06-04_skype-firefox.html">Skype is unable to support Firefox (only less popular Edge)</a>
             </h2>
             <p class="itemDate">
@@ -170,21 +184,6 @@
 <p>. . .</p>
             <div class="itemMore">
                 <a href="live.html">Continue reading</a>
-            </div>
-        </div>
-        <div class="contents">
-            <h2 class="itemTitle">
-                <a href="git-squash-hype.html">Git squash hype</a>
-            </h2>
-            <p class="itemDate">
-                2019-05-22 13:40
-            </p>
-<p>I've got an email from Atlassian today:</p>
-<p><img src="../../img/2019-05-22_git-squash-hype.png" alt="Git squash hype" /></p>
-<p>It leads to <a href="https://bitbucket.org/blog/git-squash-commits-merging-bitbucket">this BitBucket blog post</a>.</p>
-<p>Apparantly Git users use squash to liberate their history from noise. Mercurial does this kind of "noise removal" by default: one simply merges development branch into <code>default</code> one, and <code>default</code> one gets a complete diff into, as a single commit.. . .</p>
-            <div class="itemMore">
-                <a href="git-squash-hype.html">Continue reading</a>
             </div>
         </div>
 
