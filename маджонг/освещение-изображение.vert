@@ -4,13 +4,13 @@ varying vec2 texCoord;
 
 void main()
 {
-    // Перевод координаты вершины из пространства модели/объекта в пространство экрана.
+    // Translate vertex coordinates from model/object space to screen one.
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
-    // Передаём координату вершины и нормали в пространстве камеры/глаза.
+    // Pass vertex coordinates and normal into camera/eye space.
     position = vec3(gl_ModelViewMatrix * gl_Vertex);
     normal = vec3(gl_ModelViewMatrix * vec4(gl_Normal, 0.0));
     
-	// Передаём координату текстуры.
+	// Pass texture coordinate.
     texCoord = gl_MultiTexCoord0.xy;
 }

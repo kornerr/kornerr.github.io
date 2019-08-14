@@ -12,10 +12,9 @@ uniform sampler2D image;
 
 float lambertianReflectanceStrength(vec3 position, vec3 lightPosition)
 {
-    // Направление света.
-    vec3 lightVector = normalize(lightPosition - position);
-    // Сила потока света.
-    float strength = dot(normal, lightVector);
+    vec3 lightDirection = normalize(lightPosition - position);
+    // Light flux direction.
+    float strength = dot(normal, lightDirection);
     float diffuse = max(strength, 0.2);
 
     return diffuse;
