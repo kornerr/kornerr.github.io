@@ -1,4 +1,23 @@
 <!DOCTYPE html>
 <html>
-    <meta http-equiv="refresh" content="0; URL='01.html'"/>
+    <head>
+        <title>Перенаправление / Redirection</title>
+    </head>
+    <body>
+        <script>
+            const запрос = window.location.search.substring(1);
+            var адрес = "";
+            // Метка.
+            if (запрос.length)
+            {
+                адрес = "метки.html?" + запрос;
+            }
+            // Версия.
+            else
+            {
+                адрес = "01.html";
+            }
+            window.location.href = адрес;
+        </script>
+    </body>
 </html>

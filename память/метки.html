@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <head>
+        <style>
+            table
+            {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            table, th, td
+            {
+                border: 1px solid #aaa;
+                padding: 0.5em;
+                margin-top: 0.5em;
+                margin-bottom: 0.5em;
+            }
+        </style>
+        <title>Метки</title>
+    </head>
+    <body>
+        <script>
+            function базаБезФайла()
+            {
+                var база = window.location.href;
+                var компоненты = база.split(/\//);
+                компоненты.pop();
+                return decodeURIComponent(компоненты.join("/"));
+            }
+
+            function ограниченнаяСтрока(строка)
+            {
+                const предел = 93;
+                if (строка.length > предел)
+                {
+                    return строка.substring(0, предел) + ". . .";
+                }
+
+                return строка;
+            }
+
+            // JavaScript equivalent to printf/String.Format
+            // https://stackoverflow.com/a/4673436
+            function форматСтроки() {
+                // How to shift “arguments”
+                // https://stackoverflow.com/questions/4775895/how-to-shift-arguments
+                var args = Array.prototype.slice.call(arguments);
+                var str = args.shift();
+                return str.replace(/{(\d+)}/g, function(match, number) { 
+                          return typeof args[number] != 'undefined'
+                            ? args[number]
+                            : match
+                          ;
+                        });
+            }
+
+            function взять(адрес, откликУспеха, откликПровала)
+            {
+                var запрос = new XMLHttpRequest();
+                запрос.onreadystatechange = function()
+                {
+                    if (this.readyState == 4)
+                    {
+                        if (this.status == 200)
+                        {
+                            откликУспеха(this.responseText);
+                        }
+                        else if (откликПровала)
+                        {
+                            откликПровала(this.status);
+                        }
+                    }
+                }
+            
+                запрос.open("GET", адрес);
+                запрос.send();
+            }
+        </script>
+        <script>
+            var м = {};
+            м.метки = [];
+        
+            м.таблица = null;
+            м.создатьТаблицу = function()
+            {
+                const интерфейс = `
+                    <table id="метки">
+                    <tr>
+                        <th>Имя</th>
+                        <th>Описание</th>
+                        <th>Дата</th>
+                        <th>Коротко</th>
+                        <th>Адрес</th>
+                    </tr>
+                    </table>
+                `;
+                document.body.innerHTML = интерфейс;
+                м.таблица = document.getElementById("метки");
+            };
+
+            м.заполнитьТаблицу = function()
+            {
+                for (var номер in м.метки)
+                {
+                    var метка = м.метки[номер];
+                    var ряд = м.таблица.insertRow(-1);
+                    var ячейки = {
+                        "имя": ряд.insertCell(0),
+                        "описание": ряд.insertCell(1),
+                        "дата": ряд.insertCell(2),
+                        "коротко": ряд.insertCell(3),
+                        "адрес": ряд.insertCell(4),
+                    };
+                    ячейки.имя.innerHTML = метка.имя;
+                    ячейки.коротко.innerHTML = базаБезФайла() + "?" + метка.имя;
+                    ячейки.описание.innerHTML = метка.описание;
+                    ячейки.дата.innerHTML = метка.дата;
+                    ячейки.адрес.innerHTML = 
+                        форматСтроки(
+                            "<a href='{0}'>{1}</a>",
+                            метка.адрес,
+                            ограниченнаяСтрока(метка.адрес)
+                        );
+                }
+            };
+
+            м.имя = null;
+            м.разобратьИмяПеренаправления = function()
+            {
+                const имя = decodeURIComponent(window.location.search.substring(1));
+                if (имя.length)
+                {
+                    м.имя = имя;
+                }
+            };
+
+            м.адрес = function(имя)
+            {
+                if (!имя)
+                {
+                    return null;
+                }
+
+                for (var номер in м.метки)
+                {
+                    var метка = м.метки[номер];
+                    if (метка.имя == имя)
+                    {
+                        return метка.адрес;
+                    }
+                }
+
+                return null;
+            };
+
+            м.разобратьМетки = function(текст)
+            {
+                var сейчас = "";
+                var метки = [];
+                var метка = {
+                    "имя" : "",
+                    "дата" : "",
+                    "адрес" : "",
+                    "описание" : "",
+                };
+
+                function возможноЗабратьМетку()
+                {
+                    if (
+                        метка.имя.length &&
+                        метка.дата.length &&
+                        метка.адрес.length &&
+                        метка.описание.length
+                    ) {
+                        метки.push(метка);
+                        // Освободить место для следующей метки.
+                        метка = {
+                            "имя" : "",
+                            "дата" : "",
+                            "адрес" : "",
+                            "описание" : "",
+                        };
+                    }
+                }
+
+                const строки = текст.split(/\n/);
+                for (var номер in строки)
+                {
+                    const строка = строки[номер];
+                    // Ключ.
+                    if (строка == "ИМЯ")
+                    {
+                        возможноЗабратьМетку();
+                        сейчас = "имя";
+                    }
+                    else if (строка == "ДАТА")
+                    {
+                        возможноЗабратьМетку();
+                        сейчас = "дата";
+                    }
+                    else if (строка == "ОПИСАНИЕ")
+                    {
+                        возможноЗабратьМетку();
+                        сейчас = "описание";
+                    }
+                    else if (строка == "АДРЕС")
+                    {
+                        возможноЗабратьМетку();
+                        сейчас = "адрес";
+                    }
+                    // Значение.
+                    else
+                    {
+                        if (сейчас == "имя")
+                        {
+                            метка.имя += строка;
+                        }
+                        else if (сейчас == "дата")
+                        {
+                            метка.дата += строка;
+                        }
+                        else if (сейчас == "адрес")
+                        {
+                            метка.адрес += строка;
+                        }
+                        else if (сейчас == "описание")
+                        {
+                            метка.описание += строка + "\n";
+                        }
+                    }
+                }
+                // Последний раз.
+                возможноЗабратьМетку();
+                м.метки = метки;
+            };
+            
+            м.загрузитьМетки = function(откликЗавершения)
+            {
+                console.log("Загружаем");
+                взять(
+                    м.меткиАдрес,
+                    function(текст)
+                    {
+                        console.log("Загрузили");
+                        м.разобратьМетки(текст);
+                        откликЗавершения();
+                    }
+                );
+            };
+
+            м.запустить = function()
+            {
+                м.разобратьИмяПеренаправления();
+                const адр = м.адрес(м.имя)
+                // Перенаправить.
+                if (адр)
+                {
+                    window.location.href = адр;
+                }
+                // Показать заметки.
+                else
+                {
+                    м.создатьТаблицу();
+                    м.заполнитьТаблицу();
+
+                    // Уведомить о неверном имени.
+                    if (м.имя)
+                    {
+                        console.log("ВНИМАНИЕ Неверное имя: '" + м.имя + "'");
+                    }
+                }
+            };
+        </script>
+        <script>
+            м.меткиАдрес = "https://git.opengamestudio.org/kornerr/memory-notes/raw/branch/master/база";
+            м.загрузитьМетки(
+                м.запустить
+            );
+        </script>
+    </body>
+</html>
