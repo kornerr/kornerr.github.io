@@ -44,7 +44,29 @@
                             : match
                           ;
                         });
-            };
+            }
+
+            function взять(адрес, откликУспеха, откликПровала)
+            {
+                var запрос = new XMLHttpRequest();
+                запрос.onreadystatechange = function()
+                {
+                    if (this.readyState == 4)
+                    {
+                        if (this.status == 200)
+                        {
+                            откликУспеха(this.responseText);
+                        }
+                        else if (откликПровала)
+                        {
+                            откликПровала(this.status);
+                        }
+                    }
+                }
+            
+                запрос.open("GET", адрес);
+                запрос.send();
+            }
         </script>
         <script>
             var м = {};
@@ -120,6 +142,102 @@
                 return null;
             };
 
+            м.разобратьМетки = function(текст)
+            {
+                var сейчас = "";
+                var метки = [];
+                var метка = {
+                    "имя" : "",
+                    "дата" : "",
+                    "адрес" : "",
+                    "описание" : "",
+                };
+
+                function возможноСобратьМетку()
+                {
+                    if (
+                        метка.имя.length &&
+                        метка.дата.length &&
+                        метка.адрес.length &&
+                        метка.описание.length
+                    ) {
+                        метки.push(метка);
+                        // Освободить место для следующей метки.
+                        метка = {
+                            "имя" : "",
+                            "дата" : "",
+                            "адрес" : "",
+                            "описание" : "",
+                        };
+                    }
+                }
+
+                const строки = текст.split(/\n/);
+                for (var номер in строки)
+                {
+                    const строка = строки[номер];
+                    // Ключ.
+                    if (строка == "ИМЯ")
+                    {
+                        возможноСобратьМетку();
+                        сейчас = "имя";
+                    }
+                    else if (строка == "ДАТА")
+                    {
+                        возможноСобратьМетку();
+                        сейчас = "дата";
+                    }
+                    else if (строка == "ОПИСАНИЕ")
+                    {
+                        возможноСобратьМетку();
+                        сейчас = "описание";
+                    }
+                    else if (строка == "АДРЕС")
+                    {
+                        возможноСобратьМетку();
+                        сейчас = "адрес";
+                    }
+                    // Значение.
+                    else
+                    {
+                        if (сейчас == "имя")
+                        {
+                            метка.имя += строка;
+                        }
+                        else if (сейчас == "дата")
+                        {
+                            метка.дата += строка;
+                        }
+                        else if (сейчас == "адрес")
+                        {
+                            метка.адрес += строка;
+                        }
+                        else if (сейчас == "описание")
+                        {
+                            метка.описание += строка + "\n";
+                        }
+                    }
+                }
+                // Последний раз.
+                возможноСобратьМетку();
+                м.метки = метки;
+            };
+            
+            м.меткиАдрес = "https://git.opengamestudio.org/kornerr/notes/raw/branch/master/база";
+            м.загрузитьМетки = function(откликЗавершения)
+            {
+                console.log("Загружаем");
+                взять(
+                    м.меткиАдрес,
+                    function(текст)
+                    {
+                        console.log("Загрузили");
+                        м.разобратьМетки(текст);
+                        откликЗавершения();
+                    }
+                );
+            };
+
             м.запустить = function()
             {
                 м.разобратьИмяПеренаправления();
@@ -138,21 +256,15 @@
                     // Уведомить о неверном имени.
                     if (м.имя)
                     {
-                        console.log("Неверное имя: '" + м.имя + "'");
+                        console.log("ВНИМАНИЕ Неверное имя: '" + м.имя + "'");
                     }
                 }
             };
         </script>
         <script>
-            // Задать метки для проверки.
-            м.метки.push({
-                "имя": "память.цвета.ру.-апи",
-                "описание": "Игра на память. Русский язык. Внешнее АПИ.",
-                "дата": "2019-08",
-                "адрес": "http://opengamestudio.org/murom/murom_1.0.0.html?zipbase64=eMKcw40aw5tuG8OHw7XCnV8xYF7ClsK2wrTCvFgOwpLCsnoowowkL8K5GHXDoRdBcMOWw5RSw5rChMOcFcKWS1vCqSFAwpJTw5vCgcOdw4hwXSQofFPDu8OQAkVaWRZjWsOXXxjDvlHDjzkze8KZwr3CkMK7wpQaRMKASMOuw47CnMOLwpzDu8KcwplqwpXDscKXwqMNPsOkR3zDgMKPR8Obw7B5w4RGG8KjwrvCo8ONw5EmP8OgJ3zDgMO4Y8O+wpLDv8KowpfCun3Dl8Opw6rDi8KmwqfClcOKK8KewrfDmsO7TcK1esOTw7Juw7ZbX8Kbwp7DrsK4w4vDlcKvHcOXNl3Ct8OawrXDnFnCml11wo3Dm1XDj1rCrcOyI0DCuQHDqMKOZsO5Lj/DpcODG8KNWsO9w4PDmcOaB8Kzw7VLw7pXwr3DskzCqcOdwrdbwp7DpcOYwpoYwq/ClMOuwpTDjFtGw4d/bMKWwqrDgMOrw5/DuAvDvsKUw7Efw7lfw7grw75vw4bCnwNvw7/ChEfDvMO+K8O/O8Ofw6HDv8OVS8KlW8KGw4sAaBfCiG7Cj8K2RsKPw5g8wrvCs8OeLEVfw6nCuDZgCBfCjcOjIX/DusOoLn/Diw9HD3UQw4AJw7zDnMOnwrsIw4F3RsOfw7IBwopGKyPDr8OlGVYDwq7CiMKtw6cww6U+ID/DpCdAXsKlcyzDhkZbfBfDqMOYw6Ztw4bDv8OBw7fCgMOwPlLDo0MYGADCuUcaIsOLACUWAwHCoWgYw7xFeMKGw5XDrMKiCsOhcVcHJMOIw7dwdA/DvsK3AXLCoTbDg2bDp8OgwqPCtsOYHA/CucKHX8Kjw69QLGATA8KEw70Qw6EEwqjCgMONWh0KTlnCl1jDk8K6EMORwo4vS8KJecO0Z8KQw5ZAwprDnRYMw67DhSXCp8OOGD1EZhbCm8Ojw6dEw4kQRBF5w4fDtMO9U8KCfEIDaGgZbMOiMH0owosnVcOWw59nw6BdZEw6TWk7LsOTEMKXBcOAwrUmfMO9FiY1w5nDhcKLVsKFJghqw6kUwosawq/CpXvDjjXDj8K1w6xlwq0yw4PDqsKVZsKAe8KsZMO1w5V+b0VTw59mw4FGfUsnwrnCv8KGw5E9YRPDvCl9b2fDo0LCicK9BCDDsCbDvsKzb8KKejDDnHLDrMKewocxasKbw6/Dg8OiPzPCvBXCvcOdcRxXwrNYwpXDjUUQw4nCmcKbZF/Ch8OAw4RgdA8gLDbDq8KDX2BzwonDqQ/CgMOXNzDDrVJ8BBbCtcKFw4hAw4bCpzA+wqdfDmfCqMKLSXHDgWAmw41WWcK6w6ATwp1VaMOMKDA1w7UxWEAqaDBVWsOiemjCjwXDvCfDi8KjZcOUewLDs1/Co8Kmw6PDjsK8wpsIwoJ7OBVjCygTEMOzd8Kqd8KhwqPDtjvCnXjCiMKeAAVxw7/CrcO4DQZyCEvDn8Kew6jDsCrDviNwwo5NCsKAw4FSKEjDl8OWGinCsWEfw5HCpMOHBgk/JF7DoT08AcOhwrTCiMKRw6bDqsOjw73CrmPDmsOLw55KwoFgMA7Dm8KCwrXCmG3Cs28Bw5DCjxfDj8KEaCBew6QQWcOFN8Kyw7VMwr0nwqXCliYdwrTCqhfDvMKUYsKHEDcZHcKjwox0CMKJw6bChB/CiEBgwrXCmRbDjWIgw7LDkQPCmcKQIGjDrMKSVgZQLxzDg8O4KTA8wpTCgmTDs8OzEMO0w5IEwonCkRPCqMKwecOFw4/CslLCpT/CnT/CoVglfcKdDzUFOsKOIWBTwokPM0nCmMOJQldgIkEPJcOjM1cJw57DnillwqPCn8Oswpw+wr7DpsO0WMKSw47CmhFdfMOsw6vCvk3DiWjDs8KKwoQgw6R2TMOpJMK7wpRgaMK1JzDDvVDDosOfwqMSwoXDggBZw4TCoMKSCFHCsgTChlc/w4XDkcKBwo7CnxPCkwMZIMKwwprCjMOFwocNwpXCvcK8FcOEwq8pHlDDmXzDrC80wplaG8KZw7k+wrfDrBbDojFnwohIFsKRw43CgHAzwqbDuBfChEjCmFZQDsKwwrjCvcKNw77ClGYHwqNNRsKWw7AtTXwTwozCocKBHjEyETDDgcKww6AFH8KNK8O2AcK8fcKHw5EIMsOuw4MgwpN/wonCm8KMb8KgwohiwrfDjMOWJcK2w6rDtCzDlGtTfW07bsOXwoDCtFbCusOlWEvCrGtYSsKowrtqw7R6MMOPw7XDjDXDnX93w4XCscOxDWvDg8Omwol9w6YswpnCncOqFzfCvzJbHsOrwq0aLcKTeQ7Cu8OWck3Dk2bCjm0KwqjDpcOOwo3Cq8KSPMKwB08EdsOdMm9fdR0EwoUBw5DCpGvCrUHCtQDDg8OXwonCosKsw6Z9NsO8BTDDg17Ckmwzw4tmV8KMwq7DqRrDlcKPwr4xBX1BcTUkwofDi8OUwqI0wpPClMKkw5VIwqTDo0BgZA5HPsKnwqnCsMOnw5BrFcOaQcKQw4RnwqTDoMOfwrPDmktmwpt9w7LDqcKNwo/Crgl2XMKzZcO1wpDCnxVreWXClcKBw4UaXsKzw7TCnmkvWcOtUjFFwolKwo/DnnUAwpl3NcK2w5Q6bMKFGsOwX8OHwr1fw5/CtsOAf8K7YnrDi8OpOC5gIMOqwqxjdG/DgsOqLcODw77CvcOZw67CgBIMwrtlQsOZTcOOwqspwqzDjMKkwpDCi1jDicKnw7jCni1Zwq7DkMKkw5BACHEdXkMMwpnCl0vCsMO+aGoqw6PCswEhwqnCiABnwrvDk19jPcOJwpPDnMKJEMOzw747w4DCusOkeMKaLcOVEcKhJ1HCicOpIMOldsK/Z8OCw6zCrsKxwqbDucOAwqjCvkZIw7J3S0vDjMOwPMOTw64bw6EywqpVH0PCjwQEKER4wpvCvAbDl8O0w7rCrh3DkMK+w4DCtMK6XsKDIEVfF8KZBsOEL8ODw5sAc8O4wrNSwpFIVBTCtFNNw7opScK6bcOZRsOnCioYOCRFA8K+w7EqDsK1wqsqwrbDqcO7w6zDh8KuwrHDrMKjJMODD8KJwoB5w6nCtcOQw7BLwoldw689wopaW8KJw4JVw4TCpsKFwrrDnMKxC8KPw4HDnX9dfcOEN8OBwqPDniBVw5HCh8O/wrLCngDCqUdAw6pxDMOvI8Kww7jCgMKXcXbCqX7DmcKiBDDDhCYJwoXDkWQKwqXCtMKJw7sXwqzClcOEVsOxOcOGXnrCsytSN8OVFcOPVHRZG8OzOFl1wqPCnGQqwr5lwo7CkcORw4rCn8KXK37Du0QdUkvDp39FE8KGNibCmSzCgHzDmcK4w7HDumIuwoLDv8OBw5wFw7t7wrTCgiPCrUzDtlnCnsOxwpUYIsOJw57CosOHK8O/w6jCssOjwrTDpQZwXMOnw6RZXMK0aTnCnHZrwqk7AMOaw7vCg8Kiw67Du8OVw78mwrUCwrDChsObw4DDh8K7wpTCqw9CwpvCgMOcH8KWD8KiwpXClMKsZ8KCw4JNKcK7RAHCgsKpbsOKwoomwq0GU8KKwqhpKyVZGkVKwq7Do8OoaMOwwoDDhcKTw6fDtsONw6hGP8OZc0o4A8KMHMOCw4JJwow/U8KNw7zChsKfKDRiwr3CqcOIwqJQWsOHw5kiwpDDnRIhw5loZRfDqTzDhcKqw45zdlVBO1rCrsO+w5IeO8K1w5fDpgjDtFHDpWfClsOkCcKZw4VMJj4hWnXCq8KYTiLCvsO7VgbDpicTwrfCjAnDj8KWVnEuwq5RZMOjwqkrwo7ClGVtw7llwpcWTCfCsjBFwoAlHybCnHvCgDXDmMO2wpxiFMOMwrfDu8KZw5jChRvCpMOsUCfCt8OYwp9CAH5Nwq0ZPCbDusKewprCjgU7bwnCnMKvw4jCthAnHibCnA/Djh3CssKcUynDucOvRcKXw7Esw7gCZQzCkcOTw4LChwsheMKqC8KlKSM1PcOuUD89w6g1w6o5w6wxwoFbdMOzCxlxWMOKK8KSw5jCi3JBXcK5woLCnMKEbcK5w4bDpH5GPcOhwqsTCSzDlGItDhVjYwrCjMO1CEZqwrfCqTzDqn7DqsKbwo/Dk8KSI8K5w5pyw7nDvC5XEw3Dv8OMTsOPw4wgwqtmw7fCpMKIwqfDrcOuw5TDtUQNwpMkwpfClMO/wrTDpBrDqcOkw4gmwqPCq8KLViTCjcKKMlfClcOLZMKVJELDjAR1wqgqScKoZRoWUiNnITbDgl/DuU4Cw6PCgXAMwrHCsMKJF8KVwpTCn8OLchwBb8OGBMO8HTXDqcOyZMKtXMKQalMaeMOfwqTCk8O2w4LCh8OGw6ERR8OcIsKyGE4ew6YXw6c+TxBPC8KHacO7w4HDvyfDhcO0HcOow7QaGnMsGcKncMKAVcO5w5kUw6PCp8KMwrPCpB4fw4dZwpLCjcOwwqJTPDDClmXDqSPDqsKYbMKzw7B8woh9wrFqw5rDl1rCpm1+w6IawqsrcsKTw6fCg8KHw7LCoMOdwrfCuCoAQFjDocKzw7BwC8OUHC3DmEPDpHgww7rCscO8EzzCkVwyDw4Dw4hKOMK7wpFrdsOaJsOkPil/S1ZPwqnChwLCsW7DmMKvVsKVGWLCi24Kw7A4fMK8w5jCksKzKcKETxZdeGw/KQzDpT7CtsKfDMKZFcK0w73DvMOwA2UUwrTCvgfCvjYTw5vClxNaw4QuZcOvPcOCdlzDvE7DlUnDsng5wo14wppsEsOVbcOGw5kcwpUYUwRXAR0vwoIzD8Kgw73DnsOAwotAwr8HwrQrWQgvbMKlw6bDs3Q5wo7Di8OiwoFhwqHCpsKew7E3EnLDoMOrwpbCkTTDnxFawrzDpcKzwq1nw5/CgRNHw5/Du3jCpw/DhELDpsKsJcKFwpV5CyvDl8KuL8K8w4DCksKDWMOhax3DiELCocKbB8KpOWwSZ8Ojwq5OwpzCtxBywpxdwp8zw4lpe8O9w6fCr8O+KcO6w5bCiXtEw4XCrz5MwpTDjxRNwrdfwoDCrcOiTcKMw6Jdwpp8SitYcSfDmMKYwr7DuMKcwqzCunwZwqYSwrnDnhDDnnTDjBVPwqcTYsKYw49EcsOpwpnDnh/CrMKuw6nDtMK9woR8C8KWw40zwqx+wpnDjivCi8O2w5DDjsOCZsOxwpIQT8OuazLCp8Olw4Yaw4DDu8OQw6vClUjDiXLCihfDpcOxTsKaw6wrD0VfO8OtPsKuwrxCwqXClcK7wpZbwqYcwoLCs8Kzwq/Dh2Yew5clw7w8ck1cw7PCmcKLX8KUw7/CgT/ChnfCjyHDisOidcO5J8ORw6vDssKwwqDDvwFkwowcZg==",
-            });
-
-        м.запустить();
+            м.загрузитьМетки(
+                м.запустить
+            );
         </script>
     </body>
 </html>
