@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Перенаправление / Redirection</title>
+    </head>
+    <body>
+        <script>
+            const база = "метки_1.0.0.html";
+            const запрос = window.location.search.substring(1);
+            var адрес = база;
+            if (запрос.length)
+            {
+                адрес += "?" + запрос;
+            }
+            window.location.href = адрес;
+        </script>
+    </body>
+</html>
