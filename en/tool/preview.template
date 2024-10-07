@@ -1,0 +1,9 @@
+        <div class="contents">
+            <h2 class="itemTitle">
+                <a href="PSKOV_ITEM_URL">PSKOV_ITEM_TITLE</a>
+            </h2>
+PSKOV_PREVIEW
+            <div class="itemMore">
+                <a href="PSKOV_ITEM_URL">Continue reading</a>
+            </div>
+        </div>
