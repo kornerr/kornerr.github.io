@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Demo: SFU</title>
+    <style>
+      .fl {
+        float: left;
+      }
+      .invisible {
+        display: none;
+      }
+      #canvas-container {
+        width: 100%;
+        text-align: center;
+      }
+
+      #canvas {
+        border: 1px solid grey;
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invisible">
+      <img id="img1" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS40GOPDcVtbxHwkO-tu6mMp1rG3L6lcujH2gTdmSHoi43yumzKK3lzW6JKFLbI3aYlaik&usqp=CAU">
+      <img id="img2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMAKGHv_bG91VIszimoVfTdqosCYQNYuayrHmEBwzBmhcaTYMz7KNR5OHZe1LBs10V4qQ&usqp=CAU">
+    </div>
+    <div class="fl">
+      <h2>Параметры SFU</h2>
+
+      1. Количество элементов:
+      <br/>
+      <input id="inputTilesCount" type="number" min="1" value="1">
+      <br/><br/>
+
+      2. Соотношение сторон карточки:
+      <br/>
+      <select id="tileAspectRatio">
+        <option value="0x0">Авто</option>
+        <option value="1x1">1x1</option>
+        <option value="3x4">3x4</option>
+        <option value="4x3">4x3</option>
+        <option value="16x9">16x9</option>
+        <option value="16x10">16x10</option>
+        <option value="9x16">9x16</option>
+        <option value="10x16">10x16</option>
+      </select>
+      <br/><br/>
+
+      3. Заполнение:
+      <br/>
+      <select id="tileFit">
+        <option value="0">Заполнить</option>
+        <option value="1">Встроить</option>
+      </select>
+      <br/><br/>
+
+      4. Размер:
+      <br/>
+      <select id="fixedSize">
+        <option value="320x568">iPhone SE</option>
+        <option value="568x320">iPhone SE (горизонтально)</option>
+        <option value="414x736">iPhone 8 Plus</option>
+        <option value="736x414">iPhone 8 Plus (горизонтально)</option>
+        <option value="390x844">iPhone 13</option>
+        <option value="844x390">iPhone 13 (горизонтально)</option>
+        <option value="393x852">iPhone 15</option>
+        <option value="852x393">iPhone 15 (горизонтально)</option>
+      </select>
+      <br/><br/>
+      Для задания произвольного размера
+      <br/>
+      зажмите левую кнопку мыши
+      <br/>
+      в рабочей области справа
+      <br/><br/>
+      <span id="areaSize"></span>
+    </div>
+
+    <div id="canvas-container">
+      <canvas id="canvas" width=900 height=900>Не поддерживается canvas</canvas>
+    </div>
+
+    <script src="kotlin-kotlin-stdlib.js"></script>
+    <script src="iva-client-sdk-ivac.js"></script>
+    <script src="ctx.js"></script>
+    <script src="demo-sfu.js"></script>
+  </body>
+</html>
