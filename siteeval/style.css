@@ -1,0 +1,8 @@
+.header {
+  background-color: gainsboro;
+}
+
+.header-item {
+  margin: 1em;
+  display: inline;
+}
