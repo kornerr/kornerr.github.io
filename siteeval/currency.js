@@ -51,7 +51,8 @@ function CurrencyContext() {
 
 //<!-- Constants -->
 
-let CURRENCY_URL = "https://www.cbr.ru/scripts/XML_daily.asp";
+let BASE_URL = "http://167.17.178.89";
+let CURRENCY_URL = `${BASE_URL}/cbr.xml`;
 
 //<!-- Component -->
 
