@@ -1,3 +1,8 @@
+// Shortcut to get document element by id
+function deId(id) {
+    return document.getElementById(id);
+}
+
 // Load arbitrary data over HTTP(S)
 function loadURL(p, onload) {
     console.log(`ОТЛ loadURL p.url: '${p.url}'`);

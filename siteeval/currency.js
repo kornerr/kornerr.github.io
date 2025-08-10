@@ -51,8 +51,9 @@ function CurrencyContext() {
 
 //<!-- Constants -->
 
-let BASE_URL = "http://167.17.178.89";
-let CURRENCY_URL = `${BASE_URL}/cbr.xml`;
+let CURRENCY_URL = `http://167.17.178.89/cbr.xml`;
+let CURRENCY_RATE_USD_ID = "rate-usd";
+let CURRENCY_RATE_EUR_ID = "rate-eur";
 
 //<!-- Component -->
 
@@ -118,6 +119,15 @@ function currShouldLoadCBR(c) {
 
 function currDisplayCurrencies(xml) {
     console.log("ИГР CurrencyComponent/currDC xml: ", xml);
+    let usd = deId(CURRENCY_RATE_USD_ID);
+    if (usd != null) {
+        usd.innerHTML = "USD?";
+    }
+
+    let eur = deId(CURRENCY_RATE_EUR_ID);
+    if (eur != null) {
+        eur.innerHTML = "EUR?";
+    }
 }
 
 function currLoadCBR(p) {
