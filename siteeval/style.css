@@ -9,3 +9,7 @@
 .header-item > button {
   font-weight: bold;
 }
+
+.rate {
+  margin-right: 0.5em;
+}

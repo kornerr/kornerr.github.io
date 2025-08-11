@@ -54,6 +54,7 @@ function CurrencyContext() {
 let CURRENCY_URL = `http://167.17.178.89/cbr.xml`;
 let CURRENCY_RATE_USD_ID = "rate-usd";
 let CURRENCY_RATE_EUR_ID = "rate-eur";
+let CURRENCY_RAW_DELIMITER = "</Valute>";
 
 //<!-- Component -->
 
@@ -118,15 +119,16 @@ function currShouldLoadCBR(c) {
 //<!-- Other -->
 
 function currDisplayCurrencies(xml) {
-    console.log("ИГР CurrencyComponent/currDC xml: ", xml);
     let usd = deId(CURRENCY_RATE_USD_ID);
     if (usd != null) {
-        usd.innerHTML = "USD?";
+        let value = currParseCurrency(xml, "USD");
+        usd.innerHTML = `$${value.toFixed(2)}`;
     }
 
     let eur = deId(CURRENCY_RATE_EUR_ID);
     if (eur != null) {
-        eur.innerHTML = "EUR?";
+        let value = currParseCurrency(xml, "EUR");
+        eur.innerHTML = `€${value.toFixed(2)}`;
     }
 }
 
@@ -134,6 +136,20 @@ function currLoadCBR(p) {
     loadURL(p, (res) => {
         currencyCtrl().set("cbrResponse", res.responseText);
     });
+}
+
+function currParseCurrency(raw, currency) {
+    let lines = raw.split(CURRENCY_RAW_DELIMITER);
+    for (let i in lines) {
+        let ln = lines[i];
+        if (ln.includes(currency)) {
+            let parts = ln.split(/Value>(.*)<\/Value/);
+            let value = parts[1].replaceAll(",", ".");
+            return Number(value);
+        }
+    }
+
+    return -1;
 }
 
 //<!-- Setup -->
