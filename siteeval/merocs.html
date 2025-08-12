@@ -38,10 +38,19 @@
               <button id="rate-eur" class="uk-button uk-button-text" disabled></button>
             </div>
           </div>
-          <button class="uk-button uk-button-primary">Contact us</button>
+          <button class="uk-button uk-button-primary" uk-toggle="target: #contact-us">Contact us</button>
         </div>
       </div>
     </div>
+    <div id="contact-us" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Do you want to know details?</h2>
+        <p>Fill in the form so that our manager contacts you</p>
+        <p class="uk-text-right">
+          <button class="uk-button uk-button-primary">Send</button>
+        </p>
+    </div>
+
     <p>Hello merocs</p>
 
     <script>
