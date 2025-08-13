@@ -46,9 +46,29 @@
       <div class="uk-modal-dialog uk-modal-body">
         <h2 class="uk-modal-title">Do you want to know details?</h2>
         <p>Fill in the form so that our manager contacts you</p>
-        <p class="uk-text-right">
-          <button class="uk-button uk-button-primary">Send</button>
-        </p>
+        <form onsubmit="return false;">
+          <div class="uk-margin-small">
+            <div class="uk-form-controls">
+              <input id="client-name" class="uk-input" type="text" placeholder="Your name">
+            </div>
+          </div>
+          <div class="uk-margin-small">
+            <div class="uk-form-controls">
+              <input id="client-phone" class="uk-input" type="text" placeholder="+7 (900) 000 00 00">
+            </div>
+          </div>
+          <div class="uk-margin-small">
+            <div class="uk-form-controls">
+              <label>
+                <input id="accept-pd" class="uk-checkbox" type="checkbox" checked>
+                  I accept sharing my personal data
+              </label>
+            </div>
+          </div>
+          <p class="uk-text-right">
+            <button class="uk-button uk-button-primary" onclick='formCtrl().set("didClickSend", true);'>Send</button>
+          </p>
+        </form>
     </div>
 
     <p>Hello merocs</p>
