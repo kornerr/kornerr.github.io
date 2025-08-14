@@ -107,7 +107,7 @@ function AppComponent() {
         let d = { 
             "cbrRequest": (c) => { appLoadCBR(c.cbrRequest); },
             "cbrResponse": (c) => { appDisplayCurrencies(c.cbrResponse); },
-            "consultationResponse": (c) => { appLoadConsultation(c.consultationRequest); },
+            "consultationRequest": (c) => { appLoadConsultation(c.consultationRequest); },
         }
         for (let field in d) {
             this.ctrl.registerFieldCallback(field, d[field]);
