@@ -10,7 +10,12 @@ function AppContext() {
     this._construct = function() {
         this.cbrRequest = null;
         this.cbrResponse = "";
+        this.consultationRequest = null;
+        this.consultationResponse = "";
+        this.didClickSend = false;
         this.didLaunch = false;
+        this.inputClientName = "";
+        this.inputClientPhone = "";
 
         this.recentField = "";
     };
@@ -21,8 +26,18 @@ function AppContext() {
             return this.cbrRequest;
         } else if (name == "cbrResponse") {
             return this.cbrResponse;
+        } else if (name == "consultationRequest") {
+            return this.consultationRequest;
+        } else if (name == "consultationResponse") {
+            return this.consultationResponse;
         } else if (name == "didLaunch") {
             return this.didLaunch;
+        } else if (name == "didClickSend") {
+            return this.didClickSend;
+        } else if (name == "inputClientName") {
+            return this.inputClientName;
+        } else if (name == "inputClientPhone") {
+            return this.inputClientPhone;
         }
 
         return "unknown-field-name";
@@ -32,7 +47,12 @@ function AppContext() {
         let that = new AppContext();
         that.cbrRequest = this.cbrRequest;
         that.cbrResponse = this.cbrResponse;
+        that.consultationRequest = this.consultationRequest;
+        that.consultationResponse = this.consultationResponse;
+        that.didClickSend = this.didClickSend;
         that.didLaunch = this.didLaunch;
+        that.inputClientName = this.inputClientName;
+        that.inputClientPhone = this.inputClientPhone;
 
         that.recentField = this.recentField;
         return that;
@@ -43,18 +63,31 @@ function AppContext() {
             this.cbrRequest = value;
         } else if (name == "cbrResponse") {
             this.cbrResponse = value;
+        } else if (name == "consultationRequest") {
+            this.consultationRequest = value;
+        } else if (name == "consultationResponse") {
+            this.consultationResponse = value;
+        } else if (name == "didClickSend") {
+            this.didClickSend = value;
         } else if (name == "didLaunch") {
             this.didLaunch = value;
+        } else if (name == "inputClientName") {
+            this.inputClientName = value;
+        } else if (name == "inputClientPhone") {
+            this.inputClientPhone = value;
         }
     };
 }
 
 //<!-- Constants -->
 
-let APP_EXCHANGE_RATES_URL = `http://167.17.178.89/cbr.xml`;
+let APP_CLIENT_NAME_ID = "client-name";
+let APP_CLIENT_PHONE_ID = "client-phone";
+let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
 let APP_RATE_USD_ID = "rate-usd";
 let APP_RATE_EUR_ID = "rate-eur";
-let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
+let APP_URL_CONSULT = `http://167.17.178.89/api/consult`;
+let APP_URL_EXCHANGE_RATES = `http://167.17.178.89/cbr.xml`;
 
 //<!-- Component -->
 
@@ -74,6 +107,7 @@ function AppComponent() {
         let d = { 
             "cbrRequest": (c) => { appLoadCBR(c.cbrRequest); },
             "cbrResponse": (c) => { appDisplayCurrencies(c.cbrResponse); },
+            "consultationResponse": (c) => { appLoadConsultation(c.consultationRequest); },
         }
         for (let field in d) {
             this.ctrl.registerFieldCallback(field, d[field]);
@@ -84,11 +118,22 @@ function AppComponent() {
         window.addEventListener("load", (e) => {
             this.ctrl.set("didLaunch", true);
         });
+
+        let clientName = deId(APP_CLIENT_NAME_ID);
+        clientName.addEventListener("input", (e) => {
+            this.ctrl.set("inputClientName", clientName.value);
+        });
+
+        let clientPhone = deId(APP_CLIENT_PHONE_ID);
+        clientPhone.addEventListener("input", (e) => {
+            this.ctrl.set("inputClientPhone", clientPhone.value);
+        });
     };
 
     this.setupShoulds = function() {
         [
             appShouldLoadCBR,
+            appShouldLoadConsultation,
         ].forEach((f) => {
             this.ctrl.registerFunction(f);
         });
@@ -106,9 +151,26 @@ function appShouldLoadCBR(c) {
         c.cbrRequest = {
             body: "",
             method: "GET",
-            url: APP_EXCHANGE_RATES_URL,
+            url: APP_URL_EXCHANGE_RATES,
         };
         c.recentField = "cbrRequest";
+        return c;
+    }
+
+    c.recentField = "none";
+    return c;
+}
+
+// Conditions:
+// 1. `Send` button has been clicked
+function appShouldLoadConsultation(c) {
+    if (c.recentField == "didClickSend") {
+        c.consultationRequest = {
+            body: "TODO",
+            method: "POST",
+            url: APP_URL_CONSULT,
+        };
+        c.recentField = "consultationRequest";
         return c;
     }
 
@@ -135,6 +197,12 @@ function appDisplayCurrencies(xml) {
 function appLoadCBR(p) {
     loadURL(p, (res) => {
         appCtrl().set("cbrResponse", res.responseText);
+    });
+}
+
+function appLoadConsultation(p) {
+    loadURL(p, (res) => {
+        appCtrl().set("consultationResponse", res.responseText);
     });
 }
 
