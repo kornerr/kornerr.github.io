@@ -1,12 +1,12 @@
 //<!-- API -->
 
-function currencyCtrl() {
-    return window.currencyCmp.ctrl;
+function appCtrl() {
+    return window.appCmp.ctrl;
 }
 
 //<!-- Context -->
 
-function CurrencyContext() {
+function AppContext() {
     this._construct = function() {
         this.cbrRequest = null;
         this.cbrResponse = "";
@@ -29,7 +29,7 @@ function CurrencyContext() {
     };
 
     this.selfCopy = function() {
-        let that = new CurrencyContext();
+        let that = new AppContext();
         that.cbrRequest = this.cbrRequest;
         that.cbrResponse = this.cbrResponse;
         that.didLaunch = this.didLaunch;
@@ -51,19 +51,19 @@ function CurrencyContext() {
 
 //<!-- Constants -->
 
-let CURRENCY_URL = `http://167.17.178.89/cbr.xml`;
-let CURRENCY_RATE_USD_ID = "rate-usd";
-let CURRENCY_RATE_EUR_ID = "rate-eur";
-let CURRENCY_RAW_DELIMITER = "</Valute>";
+let APP_EXCHANGE_RATES_URL = `http://167.17.178.89/cbr.xml`;
+let APP_RATE_USD_ID = "rate-usd";
+let APP_RATE_EUR_ID = "rate-eur";
+let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
 
 //<!-- Component -->
 
-function CurrencyComponent() {
+function AppComponent() {
     this._construct = function() {
-        this.ctrl = new CLDController(new CurrencyContext());
+        this.ctrl = new CLDController(new AppContext());
         // Dbg.
         this.ctrl.registerCallback((c) => {
-            console.log(`ИГР CurrencyC._construct ctrl key/value: '${c.recentField}'/'${c.field(c.recentField)}'`);
+            console.log(`ИГР AppC._construct ctrl key/value: '${c.recentField}'/'${c.field(c.recentField)}'`);
         });
         this.setupEvents();
         this.setupEffects();
@@ -72,8 +72,8 @@ function CurrencyComponent() {
 
     this.setupEffects = function() {
         let d = { 
-            "cbrRequest": (c) => { currLoadCBR(c.cbrRequest); },
-            "cbrResponse": (c) => { currDisplayCurrencies(c.cbrResponse); },
+            "cbrRequest": (c) => { appLoadCBR(c.cbrRequest); },
+            "cbrResponse": (c) => { appDisplayCurrencies(c.cbrResponse); },
         }
         for (let field in d) {
             this.ctrl.registerFieldCallback(field, d[field]);
@@ -88,7 +88,7 @@ function CurrencyComponent() {
 
     this.setupShoulds = function() {
         [
-            currShouldLoadCBR,
+            appShouldLoadCBR,
         ].forEach((f) => {
             this.ctrl.registerFunction(f);
         });
@@ -101,12 +101,12 @@ function CurrencyComponent() {
 
 // Conditions:
 // 1. Did launch
-function currShouldLoadCBR(c) {
+function appShouldLoadCBR(c) {
     if (c.recentField == "didLaunch") {
         c.cbrRequest = {
             body: "",
             method: "GET",
-            url: CURRENCY_URL,
+            url: APP_EXCHANGE_RATES_URL,
         };
         c.recentField = "cbrRequest";
         return c;
@@ -118,28 +118,28 @@ function currShouldLoadCBR(c) {
 
 //<!-- Other -->
 
-function currDisplayCurrencies(xml) {
-    let usd = deId(CURRENCY_RATE_USD_ID);
+function appDisplayCurrencies(xml) {
+    let usd = deId(APP_RATE_USD_ID);
     if (usd != null) {
-        let value = currParseCurrency(xml, "USD");
+        let value = appParseCurrency(xml, "USD");
         usd.innerHTML = `$${value.toFixed(2)}`;
     }
 
-    let eur = deId(CURRENCY_RATE_EUR_ID);
+    let eur = deId(APP_RATE_EUR_ID);
     if (eur != null) {
-        let value = currParseCurrency(xml, "EUR");
+        let value = appParseCurrency(xml, "EUR");
         eur.innerHTML = `€${value.toFixed(2)}`;
     }
 }
 
-function currLoadCBR(p) {
+function appLoadCBR(p) {
     loadURL(p, (res) => {
-        currencyCtrl().set("cbrResponse", res.responseText);
+        appCtrl().set("cbrResponse", res.responseText);
     });
 }
 
-function currParseCurrency(raw, currency) {
-    let lines = raw.split(CURRENCY_RAW_DELIMITER);
+function appParseCurrency(raw, currency) {
+    let lines = raw.split(APP_CURRENCY_RAW_DELIMITER);
     for (let i in lines) {
         let ln = lines[i];
         if (ln.includes(currency)) {
@@ -154,5 +154,5 @@ function currParseCurrency(raw, currency) {
 
 //<!-- Setup -->
 
-window.currencyCmp = new CurrencyComponent();
-window.components.push(window.currencyCmp);
+window.appCmp = new AppComponent();
+window.components.push(window.appCmp);
