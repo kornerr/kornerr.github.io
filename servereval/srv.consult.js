@@ -1,5 +1,9 @@
+let fs = require("fs");
 let http = require("http");
 
+//let DST_DIR = "/var/log";
+let DST_DIR = "/tmp";
+let TEMPLATE_FILE_NAME = "%DIR%/consult_%UUID%";
 let URL_CONSULT = "/api/consult";
 
 let srv = http.createServer((req, res) => {
@@ -12,7 +16,7 @@ let srv = http.createServer((req, res) => {
         req.on("end", () => {
             // /api/consult
             if (isConsultationRequestValid(req, dat)) {
-                //processConsultation(dat);
+                saveUserContacts(dat);
                 returnSuccess(res);
             } else {
                 returnError(res);
@@ -58,6 +62,27 @@ function returnSuccess(res) {
     res.writeHead(200, { "Content-Type": "application/json;charset=UTF-8" });
     let dat = { code: 4 };
     res.end(JSON.stringify(dat));
+}
+
+function saveUserContacts(dat) {
+    let fileName = TEMPLATE_FILE_NAME
+        .replaceAll("%DIR%", DST_DIR)
+        .replaceAll("%UUID%", uuidString());
+    fs.writeFile(fileName, dat, (err) => {
+        console.log("ИГР saveUC fileN/err:", fileName, err);
+    });
+}
+
+// https://stackoverflow.com/a/2117523
+function uuidString() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+        /[xy]/g,
+        function(c)
+        {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        }
+    );
 }
 
 // Launch.

@@ -1,3 +1,3 @@
 #!/bin/bash
 curl -X POST -d '.' http://localhost:8001/api/consult
-curl -X POST -d '{"name": "test-name","phone": "+79001002030"}' http://localhost:8001/api/consult
+curl -X POST -d '{"name":"test-name","phone":"+79001002030"}' http://localhost:8001/api/consult
