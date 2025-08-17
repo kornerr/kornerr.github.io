@@ -16,6 +16,7 @@ function AppContext() {
         this.didLaunch = false;
         this.inputClientName = "";
         this.inputClientPhone = "";
+        this.showConsultationNotice = false;
 
         this.recentField = "";
     };
@@ -38,6 +39,8 @@ function AppContext() {
             return this.inputClientName;
         } else if (name == "inputClientPhone") {
             return this.inputClientPhone;
+        } else if (name == "showConsultationNotice") {
+            return this.showConsultationNotice;
         }
 
         return "unknown-field-name";
@@ -53,6 +56,7 @@ function AppContext() {
         that.didLaunch = this.didLaunch;
         that.inputClientName = this.inputClientName;
         that.inputClientPhone = this.inputClientPhone;
+        that.showConsultationNotice = this.showConsultationNotice;
 
         that.recentField = this.recentField;
         return that;
@@ -75,6 +79,8 @@ function AppContext() {
             this.inputClientName = value;
         } else if (name == "inputClientPhone") {
             this.inputClientPhone = value;
+        } else if (name == "showConsultationNotice") {
+            this.showConsultationNotice = value;
         }
     };
 }
@@ -83,6 +89,7 @@ function AppContext() {
 
 let APP_CLIENT_NAME_ID = "client-name";
 let APP_CLIENT_PHONE_ID = "client-phone";
+let APP_CONSULTATION_SUCCESS = "Thank you. Our manager will contact you soon";
 let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
 let APP_RATE_USD_ID = "rate-usd";
 let APP_RATE_EUR_ID = "rate-eur";
@@ -108,6 +115,7 @@ function AppComponent() {
             "cbrRequest": (c) => { appLoadCBR(c.cbrRequest); },
             "cbrResponse": (c) => { appDisplayCurrencies(c.cbrResponse); },
             "consultationRequest": (c) => { appLoadConsultation(c.consultationRequest); },
+            "showConsultationNotice": (c) => { reportSuccess(APP_CONSULTATION_SUCCESS); },
         }
         for (let field in d) {
             this.ctrl.registerFieldCallback(field, d[field]);
@@ -134,6 +142,7 @@ function AppComponent() {
         [
             appShouldLoadCBR,
             appShouldLoadConsultation,
+            appShouldShowConsultationNotice,
         ].forEach((f) => {
             this.ctrl.registerFunction(f);
         });
@@ -172,6 +181,20 @@ function appShouldLoadConsultation(c) {
             url: APP_URL_CONSULT,
         };
         c.recentField = "consultationRequest";
+        return c;
+    }
+
+    c.recentField = "none";
+    return c;
+}
+
+// Conditions:
+// 1. Consultation response became available
+function appShouldShowConsultationNotice(c) {
+    if (c.recentField == "consultationResponse") {
+        // TODO Check code 4
+        c.showConsultationNotice = true;
+        c.recentField = "showConsultationNotice";
         return c;
     }
 

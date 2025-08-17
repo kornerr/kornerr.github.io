@@ -28,3 +28,19 @@ function loadURL(p, onload) {
     };
     req.send(p.body);
 };
+
+// Report success as UIkit notification
+//
+// A tiny delay is used to overcome the conflict of UIkit and CLDController
+function reportSuccess(text, timeout = 5000) {
+    setTimeout(
+        () => {
+            UIkit.notification({
+                message: text,
+                status: "success",
+                timeout: timeout,
+            });
+        },
+        0
+    );
+}
