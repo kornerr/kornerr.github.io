@@ -165,8 +165,9 @@ function appShouldLoadCBR(c) {
 // 1. `Send` button has been clicked
 function appShouldLoadConsultation(c) {
     if (c.recentField == "didClickSend") {
+        let body = appConsultBody(c.inputClientName, c.inputClientPhone);
         c.consultationRequest = {
-            body: "TODO",
+            body: body,
             method: "POST",
             url: APP_URL_CONSULT,
         };
@@ -179,6 +180,10 @@ function appShouldLoadConsultation(c) {
 }
 
 //<!-- Other -->
+
+function appConsultBody(name, phone) {
+    return `{"name":"${name}","phone":"${phone}"}`;
+}
 
 function appDisplayCurrencies(xml) {
     let usd = deId(APP_RATE_USD_ID);
