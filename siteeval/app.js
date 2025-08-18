@@ -12,6 +12,7 @@ function AppContext() {
         this.cbrResponse = "";
         this.consultationRequest = null;
         this.consultationResponse = "";
+        this.didAcceptConsultation = false;
         this.didClickSend = false;
         this.didLaunch = false;
         this.inputClientName = "";
@@ -31,6 +32,8 @@ function AppContext() {
             return this.consultationRequest;
         } else if (name == "consultationResponse") {
             return this.consultationResponse;
+        } else if (name == "didAcceptConsultation") {
+            return this.didAcceptConsultation;
         } else if (name == "didLaunch") {
             return this.didLaunch;
         } else if (name == "didClickSend") {
@@ -52,6 +55,7 @@ function AppContext() {
         that.cbrResponse = this.cbrResponse;
         that.consultationRequest = this.consultationRequest;
         that.consultationResponse = this.consultationResponse;
+        that.didAcceptConsultation = this.didAcceptConsultation;
         that.didClickSend = this.didClickSend;
         that.didLaunch = this.didLaunch;
         that.inputClientName = this.inputClientName;
@@ -71,6 +75,8 @@ function AppContext() {
             this.consultationRequest = value;
         } else if (name == "consultationResponse") {
             this.consultationResponse = value;
+        } else if (name == "didAcceptConsultation") {
+            this.didAcceptConsultation = value;
         } else if (name == "didClickSend") {
             this.didClickSend = value;
         } else if (name == "didLaunch") {
@@ -91,6 +97,7 @@ let APP_CLIENT_NAME_ID = "client-name";
 let APP_CLIENT_PHONE_ID = "client-phone";
 let APP_CONSULTATION_SUCCESS = "Thank you. Our manager will contact you soon";
 let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
+let APP_EXPECTED_CONSULTATION_RESPONSE = '{"code":4}';
 let APP_RATE_USD_ID = "rate-usd";
 let APP_RATE_EUR_ID = "rate-eur";
 let APP_URL_CONSULT = `http://167.17.178.89/api/consult`;
@@ -140,6 +147,7 @@ function AppComponent() {
 
     this.setupShoulds = function() {
         [
+            appShouldAcceptConsultation,
             appShouldLoadCBR,
             appShouldLoadConsultation,
             appShouldShowConsultationNotice,
@@ -152,6 +160,22 @@ function AppComponent() {
 }
 
 //<!-- Shoulds -->
+
+// Conditions:
+// 1. Consultation response is available
+function appShouldAcceptConsultation(c) {
+    if (
+        c.recentField == "consultationResponse" &&
+        c.consultationResponse == APP_EXPECTED_CONSULTATION_RESPONSE
+    ) {
+        c.didAcceptConsultation = true;
+        c.recentField = "didAcceptConsultation";
+        return c;
+    }
+
+    c.recentField = "none";
+    return c;
+}
 
 // Conditions:
 // 1. Did launch
@@ -189,10 +213,9 @@ function appShouldLoadConsultation(c) {
 }
 
 // Conditions:
-// 1. Consultation response became available
+// 1. Consultation request was accepted
 function appShouldShowConsultationNotice(c) {
-    if (c.recentField == "consultationResponse") {
-        // TODO Check code 4
+    if (c.recentField == "didAcceptConsultation") {
         c.showConsultationNotice = true;
         c.recentField = "showConsultationNotice";
         return c;
