@@ -8,29 +8,22 @@ function appCtrl() {
 
 function AppContext() {
     this._construct = function() {
-        this.cbrRequest = null;
-        this.cbrResponse = "";
-        this.consultationRequest = null;
-        this.consultationResponse = "";
+        this.currencies = [];
         this.didAcceptConsultation = false;
         this.didClickSend = false;
         this.didLaunch = false;
         this.inputClientName = "";
         this.inputClientPhone = "";
+        this.request = null;
+        this.response = null;
 
         this.recentField = "";
     };
     this._construct();
 
     this.field = function(name) {
-        if (name == "cbrRequest") {
-            return this.cbrRequest;
-        } else if (name == "cbrResponse") {
-            return this.cbrResponse;
-        } else if (name == "consultationRequest") {
-            return this.consultationRequest;
-        } else if (name == "consultationResponse") {
-            return this.consultationResponse;
+        if (name == "currencies") {
+            return this.currencies;
         } else if (name == "didAcceptConsultation") {
             return this.didAcceptConsultation;
         } else if (name == "didLaunch") {
@@ -41,6 +34,10 @@ function AppContext() {
             return this.inputClientName;
         } else if (name == "inputClientPhone") {
             return this.inputClientPhone;
+        } if (name == "request") {
+            return this.request;
+        } else if (name == "response") {
+            return this.response;
         }
 
         return "unknown-field-name";
@@ -48,29 +45,22 @@ function AppContext() {
 
     this.selfCopy = function() {
         let that = new AppContext();
-        that.cbrRequest = this.cbrRequest;
-        that.cbrResponse = this.cbrResponse;
-        that.consultationRequest = this.consultationRequest;
-        that.consultationResponse = this.consultationResponse;
+        that.currencies = this.currencies;
         that.didAcceptConsultation = this.didAcceptConsultation;
         that.didClickSend = this.didClickSend;
         that.didLaunch = this.didLaunch;
         that.inputClientName = this.inputClientName;
         that.inputClientPhone = this.inputClientPhone;
+        that.request = this.request;
+        that.response = this.response;
 
         that.recentField = this.recentField;
         return that;
     };
 
     this.setField = function(name, value) {
-        if (name == "cbrRequest") {
-            this.cbrRequest = value;
-        } else if (name == "cbrResponse") {
-            this.cbrResponse = value;
-        } else if (name == "consultationRequest") {
-            this.consultationRequest = value;
-        } else if (name == "consultationResponse") {
-            this.consultationResponse = value;
+        if (name == "currencies") {
+            this.currencies = value;
         } else if (name == "didAcceptConsultation") {
             this.didAcceptConsultation = value;
         } else if (name == "didClickSend") {
@@ -81,6 +71,10 @@ function AppContext() {
             this.inputClientName = value;
         } else if (name == "inputClientPhone") {
             this.inputClientPhone = value;
+        } else if (name == "request") {
+            this.request = value;
+        } else if (name == "response") {
+            this.response = value;
         }
     };
 }
@@ -113,10 +107,18 @@ function AppComponent() {
     };
 
     this.setupEffects = function() {
+        this.ctrl.registerFieldCallback("request", (c) => {
+            loadURL(c.request, (res) => {
+                let r = {
+                    contents: res.responseText,
+                    status: res.status,
+                    url: res.responseURL,
+                }
+                this.ctrl.set("response", r);
+            });
+        });
         let d = { 
-            "cbrRequest": (c) => { appLoadCBR(c.cbrRequest); },
-            "cbrResponse": (c) => { appDisplayCurrencies(c.cbrResponse); },
-            "consultationRequest": (c) => { appLoadConsultation(c.consultationRequest); },
+            "currencies": (c) => { appDisplayCurrencies(c.currencies); },
             "didAcceptConsultation": (c) => { appHideConsultationDialog(); reportSuccess(APP_CONSULTATION_SUCCESS); },
         }
         for (let field in d) {
@@ -143,8 +145,8 @@ function AppComponent() {
     this.setupShoulds = function() {
         [
             appShouldAcceptConsultation,
-            appShouldLoadCBR,
-            appShouldLoadConsultation,
+            appShouldLoad,
+            appShouldResetCurrencies,
         ].forEach((f) => {
             this.ctrl.registerFunction(f);
         });
@@ -173,14 +175,26 @@ function appShouldAcceptConsultation(c) {
 
 // Conditions:
 // 1. Did launch
-function appShouldLoadCBR(c) {
+// 1. Use did click `Send` button
+function appShouldLoad(c) {
     if (c.recentField == "didLaunch") {
-        c.cbrRequest = {
+        c.request = {
             body: "",
             method: "GET",
             url: APP_URL_EXCHANGE_RATES,
         };
-        c.recentField = "cbrRequest";
+        c.recentField = "request";
+        return c;
+    }
+
+    if (c.recentField == "didClickSend") {
+        let body = appConsultBody(c.inputClientName, c.inputClientPhone);
+        c.request = {
+            body: body,
+            method: "POST",
+            url: APP_URL_CONSULT,
+        };
+        c.recentField = "request";
         return c;
     }
 
@@ -189,16 +203,16 @@ function appShouldLoadCBR(c) {
 }
 
 // Conditions:
-// 1. `Send` button has been clicked
-function appShouldLoadConsultation(c) {
-    if (c.recentField == "didClickSend") {
-        let body = appConsultBody(c.inputClientName, c.inputClientPhone);
-        c.consultationRequest = {
-            body: body,
-            method: "POST",
-            url: APP_URL_CONSULT,
-        };
-        c.recentField = "consultationRequest";
+// 1. CBR response
+function appShouldResetCurrencies(c) {
+    if (
+        c.recentField == "response" &&
+        c.response.url == APP_URL_EXCHANGE_RATES
+    ) {
+        let usd = appParseCurrency(c.response.contents, "USD");
+        let eur = appParseCurrency(c.response.contents, "EUR");
+        c.currencies = [usd, eur];
+        c.recentField = "currencies";
         return c;
     }
 
@@ -212,17 +226,17 @@ function appConsultBody(name, phone) {
     return `{"name":"${name}","phone":"${phone}"}`;
 }
 
-function appDisplayCurrencies(xml) {
+function appDisplayCurrencies(values) {
     let usd = deId(APP_RATE_USD_ID);
     if (usd != null) {
-        let value = appParseCurrency(xml, "USD");
-        usd.innerHTML = `$${value.toFixed(2)}`;
+        let vusd = values[0];
+        usd.innerHTML = `$${vusd.toFixed(2)}`;
     }
 
     let eur = deId(APP_RATE_EUR_ID);
     if (eur != null) {
-        let value = appParseCurrency(xml, "EUR");
-        eur.innerHTML = `€${value.toFixed(2)}`;
+        let veur = values[1];
+        eur.innerHTML = `€${veur.toFixed(2)}`;
     }
 }
 
@@ -231,18 +245,6 @@ function appHideConsultationDialog() {
     if (dlg != null) {
         UIkit.modal(dlg).hide();
     }
-}
-
-function appLoadCBR(p) {
-    loadURL(p, (res) => {
-        appCtrl().set("cbrResponse", res.responseText);
-    });
-}
-
-function appLoadConsultation(p) {
-    loadURL(p, (res) => {
-        appCtrl().set("consultationResponse", res.responseText);
-    });
 }
 
 function appParseCurrency(raw, currency) {
