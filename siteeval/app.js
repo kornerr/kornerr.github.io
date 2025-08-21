@@ -81,12 +81,12 @@ function AppContext() {
 
 //<!-- Constants -->
 
-let APP_CONSULTATION_SUCCESS = "Thank you. Our manager will contact you soon";
 let APP_CONSULTATION_DIALOG_ID = "contact-us";
+let APP_CONSULTATION_SUCCESS = "Thank you. Our manager will contact you soon";
 let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
 let APP_EXPECTED_CONSULTATION_RESPONSE = '{"code":4}';
-let APP_RATE_USD_ID = "rate-usd";
 let APP_RATE_EUR_ID = "rate-eur";
+let APP_RATE_USD_ID = "rate-usd";
 let APP_URL_CONSULT = `http://167.17.178.89/api/consult`;
 let APP_URL_EXCHANGE_RATES = `http://167.17.178.89/cbr.xml`;
 
