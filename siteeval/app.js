@@ -99,8 +99,8 @@ function AppComponent() {
         this.ctrl.registerCallback((c) => {
             console.log(`ИГР AppC._construct ctrl key/value: '${c.recentField}'/'${c.field(c.recentField)}'`);
         });
-        this.setupEvents();
         this.setupEffects();
+        this.setupEvents();
         this.setupShoulds();
     };
 
