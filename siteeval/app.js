@@ -117,12 +117,16 @@ function AppComponent() {
                 this.ctrl.set("response", r);
             });
         });
-        let d = { 
-            "currencies": (c) => { appDisplayCurrencies(c.currencies); },
-            "didAcceptConsultation": (c) => { appHideConsultationDialog(); reportSuccess(APP_CONSULTATION_SUCCESS); },
-        }
-        for (let field in d) {
-            this.ctrl.registerFieldCallback(field, d[field]);
+
+        let oneliners = [ 
+            ["currencies", (c) => { appDisplayCurrencies(c.currencies); }],
+            ["didAcceptConsultation", (c) => { appHideConsultationDialog(); }],
+            ["didAcceptConsultation", (c) => { reportSuccess(APP_CONSULTATION_SUCCESS); }],
+        ];
+        for (let i in oneliners) {
+            let field = oneliners[i][0];
+            let cb = oneliners[i][1];
+            this.ctrl.registerFieldCallback(field, cb);
         }
     };
 
@@ -158,11 +162,12 @@ function AppComponent() {
 //<!-- Shoulds -->
 
 // Conditions:
-// 1. Consultation response is available
+// 1. Expected consultation response is available
 function appShouldAcceptConsultation(c) {
     if (
-        c.recentField == "consultationResponse" &&
-        c.consultationResponse == APP_EXPECTED_CONSULTATION_RESPONSE
+        c.recentField == "response" &&
+        c.response.url == APP_URL_CONSULT &&
+        c.response.contents == APP_EXPECTED_CONSULTATION_RESPONSE
     ) {
         c.didAcceptConsultation = true;
         c.recentField = "didAcceptConsultation";
