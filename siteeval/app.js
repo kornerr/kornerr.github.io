@@ -117,13 +117,14 @@ function AppComponent() {
         });
 
         let oneliners = [ 
-            ["currencies", (c) => { appDisplayCurrencies(c.currencies); }],
-            ["didAcceptConsultation", (c) => { appHideConsultationDialog(); }],
-            ["didAcceptConsultation", (c) => { reportSuccess(APP_CONSULTATION_SUCCESS); }],
+            "currencies", (c) => { appDisplayCurrencies(c.currencies); },
+            "didAcceptConsultation", (c) => { appHideConsultationDialog(); },
+            "didAcceptConsultation", (c) => { reportSuccess(APP_CONSULTATION_SUCCESS); },
         ];
-        for (let i in oneliners) {
-            let field = oneliners[i][0];
-            let cb = oneliners[i][1];
+        let halfCount = oneliners.length / 2;
+        for (let i = 0; i < halfCount; ++i) {
+            let field = oneliners[i * 2];
+            let cb = oneliners[i * 2 + 1];
             this.ctrl.registerFieldCallback(field, cb);
         }
     };
