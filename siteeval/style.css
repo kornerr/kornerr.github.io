@@ -1,0 +1,27 @@
+.header {
+  background-color: gainsboro;
+}
+
+.header-item {
+  margin-left: 1em;
+  margin-right: 1em;
+  display: inline;
+}
+.header-item > button {
+  font-weight: bold;
+}
+
+.rate {
+  margin-right: 0.5em;
+}
+
+.vert-align {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
