@@ -134,16 +134,6 @@ function AppComponent() {
         window.addEventListener("load", (e) => {
             this.ctrl.set("didLaunch", true);
         });
-
-        let clientName = deId(APP_CLIENT_NAME_ID);
-        clientName.addEventListener("input", (e) => {
-            this.ctrl.set("inputClientName", clientName.value);
-        });
-
-        let clientPhone = deId(APP_CLIENT_PHONE_ID);
-        clientPhone.addEventListener("input", (e) => {
-            this.ctrl.set("inputClientPhone", clientPhone.value);
-        });
     };
 
     this.setupShoulds = function() {
