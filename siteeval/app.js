@@ -220,6 +220,22 @@ function appConsultBody(name, phone) {
     return `{"name":"${name}","phone":"${phone}"}`;
 }
 
+function appParseCurrency(raw, currency) {
+    let lines = raw.split(APP_CURRENCY_RAW_DELIMITER);
+    for (let i in lines) {
+        let ln = lines[i];
+        if (ln.includes(currency)) {
+            let parts = ln.split(/Value>(.*)<\/Value/);
+            let value = parts[1].replaceAll(",", ".");
+            return Number(value);
+        }
+    }
+
+    return -1;
+}
+
+//<!-- Effects -->
+
 function appDisplayCurrencies(values) {
     let usd = deId(APP_RATE_USD_ID);
     if (usd != null) {
@@ -239,20 +255,6 @@ function appHideConsultationDialog() {
     if (dlg != null) {
         UIkit.modal(dlg).hide();
     }
-}
-
-function appParseCurrency(raw, currency) {
-    let lines = raw.split(APP_CURRENCY_RAW_DELIMITER);
-    for (let i in lines) {
-        let ln = lines[i];
-        if (ln.includes(currency)) {
-            let parts = ln.split(/Value>(.*)<\/Value/);
-            let value = parts[1].replaceAll(",", ".");
-            return Number(value);
-        }
-    }
-
-    return -1;
 }
 
 //<!-- Setup -->
