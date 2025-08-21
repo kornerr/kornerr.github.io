@@ -81,8 +81,6 @@ function AppContext() {
 
 //<!-- Constants -->
 
-let APP_CLIENT_NAME_ID = "client-name";
-let APP_CLIENT_PHONE_ID = "client-phone";
 let APP_CONSULTATION_SUCCESS = "Thank you. Our manager will contact you soon";
 let APP_CONSULTATION_DIALOG_ID = "contact-us";
 let APP_CURRENCY_RAW_DELIMITER = "</Valute>";
