@@ -1,0 +1,13 @@
+.header-bg {
+  background:
+    linear-gradient(rgba(100,100,100,0.5), rgba(100,100,100,0.5)),
+    url("Serov_Autumn_evening_1886.jpg");
+  );
+  /*
+  background-image: url("Serov_Autumn_evening_1886.jpg");
+  */
+  background-size: cover;
+}
+.header-fg {
+  color: white;
+}
