@@ -1,11 +1,8 @@
 .header-bg {
   background:
-    linear-gradient(rgba(100,100,100,0.5), rgba(100,100,100,0.5)),
-    url("Serov_Autumn_evening_1886.jpg");
+    linear-gradient(rgba(200,200,200,0.6), rgba(200,200,200,0.6)),
+    url("aivazovsky_brig-mercury_800_flop.jpg");
   );
-  /*
-  background-image: url("Serov_Autumn_evening_1886.jpg");
-  */
   background-size: cover;
 }
 .header-fg {
