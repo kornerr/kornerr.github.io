@@ -1,7 +1,7 @@
 .header-bg {
   background:
-    linear-gradient(rgba(200,200,200,0.6), rgba(200,200,200,0.6)),
-    url("aivazovsky_brig-mercury_800_flop.jpg");
+    linear-gradient(rgba(100,100,100,0.6), rgba(100,100,100,0.6)),
+    url("serov_domo.jpg");
   );
   background-size: cover;
 }
