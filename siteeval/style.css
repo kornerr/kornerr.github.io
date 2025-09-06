@@ -25,3 +25,12 @@
   display: flex;
   justify-content: space-between;
 }
+
+.btn-bottom-parent {
+  position: relative;
+}
+
+.btn-bottom {
+  position: absolute;
+  bottom: 1em;
+}

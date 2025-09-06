@@ -1,0 +1,10 @@
+.header-bg {
+  background:
+    linear-gradient(rgba(100,100,100,0.6), rgba(100,100,100,0.6)),
+    url("img/serov_domo.jpg");
+  );
+  background-size: cover;
+}
+.header-fg {
+  color: white;
+}
